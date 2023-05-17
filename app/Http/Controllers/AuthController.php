@@ -16,14 +16,23 @@ class AuthController extends Controller
         $request->validate([
         'name'=>'required|min:3|max:255',
         'email'=>'required|email|max:255|unique:users',
-        'password'=>'required|min:8|confirmed'
+        'password'=>'required|min:8|confirmed',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
 
     ]);
+    // Check if the image field exists 
+
+    if ($request->hasFile('image')) { 
+        $image_name = time() . rand(0, 9999) . '.' . $request->image->getClientOriginalExtension(); 
+        $request->image->storeAs('public/users', $image_name);
+    }
+    
     // register
     $user=User::create([
         'name'=>$request->name,
         'email'=>$request->email,
         'password'=>Hash::make($request->password),
+        'image' => $image_name,
     ]);
 
     
@@ -36,7 +45,7 @@ class AuthController extends Controller
             return redirect()->route('adminPanel');
         
         }
-        elseif(Auth::login($user))
+        else
     {
         return redirect()->route('home');
     }

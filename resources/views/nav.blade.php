@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- Custom CSS -->
+    @vite(['resources/sass/app.scss'])
     @vite(['resources/css/app.css'])
 </head>
 <body>
@@ -26,7 +27,7 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="#">Accueil</a></li>
+                    <li><a href="{{route('home')}}">Accueil</a></li>
                    
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Catégories <span class="caret"></span></a>
@@ -38,22 +39,27 @@
                     </li>
                     <li class="nav-item">
                         <form class="form-inline my-3 my-lg-0">
-                          <input class="form-control mr-sm-2 w-100 w-sm-auto" style="width: 500px;"type="search" placeholder="Rechercher" aria-label="Rechercher">
+                          <input class="form-control mr-sm-2 w-100 w-sm-auto" style="width: 300px;"type="search" placeholder="Rechercher" aria-label="Rechercher">
                           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
                         </form>
                       </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @auth
+                   
+
                         <li class="nav-item">
+
                             <a class="nav-link" href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                
                                 Se déconnecter
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 {{ csrf_field() }}
                             </form>
                         </li>
+                        
                     @else
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">Se connecter</a>
