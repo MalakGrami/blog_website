@@ -42,7 +42,7 @@ class AuthController extends Controller
     
     if(Auth::user() && Auth::user()->is_admin)
         {
-            return redirect()->route('adminPanel');
+            return redirect()->route('adminPanel.getChartData');
         
         }
         else
@@ -69,7 +69,7 @@ class AuthController extends Controller
             // attempt to authenticate user
             if (Auth::attempt($details)) { 
                 if (Auth::user()->is_admin) { // check if user is admin
-                    return redirect()->route('adminPanel'); // redirect to admin panel
+                    return redirect()->route('adminPanel.getChartData'); // redirect to admin panel
                 } else {
                     return redirect()->route('home'); // redirect to home page for regular user
                 }

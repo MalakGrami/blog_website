@@ -48,7 +48,7 @@
                     @enderror
                 </div>
                 <div class="field">
-                    <button type="submit" class="btn btn-primary btn-block">Inscription</button>
+                    <button type="submit" class="btnn btnn-primary btnn-block">Inscription</button>
                 </div>
                 
                     @csrf

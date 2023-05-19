@@ -1,14 +1,42 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Carbon\Carbon;
 use App\Models\blog;
 use App\Models\category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\DB;
+use ConsoleTVs\Charts\Facades\Charts;
+use Illuminate\Http\JsonResponse;
 class BlogController extends Controller
 {
-    //
+    //get blogs with  search or not 
+    public function home(Request $request)
+    {
+        $keyword = $request->input('keyword');
+    
+        $query = Blog::where('accepted', 1);
+    
+        if ($keyword) {
+            $query->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', '%' . $keyword . '%')
+                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                    ->orWhereHas('category', function ($query) use ($keyword) {
+                        $query->where('name', 'like', '%' . $keyword . '%');
+                    });
+            });
+        }
+    
+        $blogs = $query->orderBy('created_at', 'desc')->paginate(9);
+    
+        return view('index', compact('blogs'));
+    }
+    
+    
+    
+    
+
     public function createBlog()
     {
         $categories = Category::all();
@@ -31,12 +59,31 @@ class BlogController extends Controller
         
     } 
 
+    public function all_blogs_of_user(){
+        $userId = auth()->user()->id;
+    $blogs = blog::where('user_id', $userId)->paginate(7);
+    return view('user.blogs.index', compact('blogs'));
+
+    }
+
     public function show($id)
     {
         $blog = Blog::findOrFail($id);
         $categoryName = $blog->category->name; // Get the name of the category
     
-        return view('adminPanel.blog.showBlog', compact('blog', 'categoryName'));
+        if (!auth()->check()) {
+            return view('blogDetail', compact('blog', 'categoryName'));
+        }
+    
+        if (auth()->user()->is_admin == 1) {
+            return view('adminPanel.blog.showBlog', compact('blog', 'categoryName'));
+        } elseif ($blog->user_id == auth()->user()->id) {
+            return view('user.blogs.showBlog', compact('blog', 'categoryName'));
+        } else {
+            return view('blogDetail', compact('blog', 'categoryName'));
+        }
+    
+    
     }
 
 
@@ -93,45 +140,51 @@ class BlogController extends Controller
                 $blog=blog::findOrFail($id);
                 $categories=category::all();
                 
-                return view('adminPanel.blog.updateBlog',['categories'=>$categories] ,['blog'=>$blog]);
+                
+                if (auth()->user()->is_admin == 1) {
+                    return view('adminPanel.blog.updateBlog',['categories'=>$categories] ,['blog'=>$blog]);
+                } else {
+                    return view('user.blogs.update',['categories'=>$categories] ,['blog'=>$blog]);
+                }
                 
             }
 
 
             public function update(Request $request, $id)
             {
-                // Validate the request
+            // Validate the request
+            $request->validate([
+            'title' => 'required|max:255',
+            'category_id' => 'required',
+            'description' => 'required',
+            ]);
+            // Get the authenticated user's ID
+        $userId = Auth::id();
+
+        // Find the blog based on the given ID
+        $blog = Blog::findOrFail($id);
+
+        // Check if the authenticated user is the owner of the blog
+        if ($blog->user_id === $userId) {
+            // Store the image if provided
+            if ($request->hasFile('image')) {
                 $request->validate([
-                    'title' => 'required|max:255',
-                    'category_id' => 'required',
-                    'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                    'description' => 'required',
+                    'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ]);
-            
-                // Get the authenticated user's ID
-                $userId = Auth::id();
-            
-                // Find the blog based on the given ID
-                $blog = Blog::findOrFail($id);
-            
-                // Check if the authenticated user is the owner of the blog
-                if ($blog->user_id === $userId) {
-                    // Store the image if provided
-                    if ($request->image) {
-                        $image_name = 'blogs/' . time() . rand(0, 9999) . '.' . $request->image->getClientOriginalExtension();
-                        $request->image->storeAs('public', $image_name);
-                        $blog->image = $image_name;
-                    }
-            
+
+                $imagePath = $request->file('image')->store('blogs', 'public');
+                $blog->image = $imagePath;
+            }
+
                     // Update the blog attributes
-                    $blog->title = $request->title;
-                    $blog->category_id = $request->category_id;
-                    $blog->description = $request->description;
-                    $blog->accepted =false;
-            
+                    $blog->title = $request->input('title');
+                    $blog->category_id = $request->input('category_id');
+                    $blog->description = $request->input('description');
+                    $blog->accepted = false;
+
                     // Save the changes to the database
                     $blog->save();
-            
+
                     // Return a response
                     return back()->with('success', 'Blog updated.');
                 } else {
@@ -139,4 +192,35 @@ class BlogController extends Controller
                     return redirect()->back()->with('error', 'You are not authorized to update this blog.');
                 }
             }
-        }            
+
+    // dashboard
+    public function getChartData()
+{
+    // Get the blogs created on each day
+    $blogs = Blog::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
+        ->groupBy(DB::raw('DATE(created_at)'))
+        ->pluck('count', 'date')
+        ->toArray();
+
+    // Prepare data for the line chart
+    $labels = [];
+    $data = [];
+    $today = Carbon::now()->format('Y-m-d');
+    $start = Carbon::now()->subDays(6)->format('Y-m-d'); // Count for the last 7 days
+
+    $currentDate = Carbon::parse($start);
+    while ($currentDate <= $today) {
+        $labels[] = $currentDate->format('Y-m-d');
+        $data[] = $blogs[$currentDate->format('Y-m-d')] ?? 0;
+        $currentDate->addDay();
+    }
+
+    // Pass the data to the view
+    return view('adminPanel.dashboard')->with(compact('labels', 'data'));
+}
+
+}
+
+
+    
+                

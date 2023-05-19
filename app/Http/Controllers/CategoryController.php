@@ -8,11 +8,19 @@ class CategoryController extends Controller
 {
     //
     public function index()
-    {
-        $categories=category::paginate(3);
-        return view('adminPanel.categories.index',compact('categories'));
-    }
+{
+   
+        $categories = Category::paginate(3);
+        return view('adminPanel.categories.index', compact('categories'));
+   
+}
+public function allcategories()
+{
+   
+    $categories = Category::all();
+    return view('nav')->with('categories', $categories);
 
+}
 
 
     public function add(Request $request)

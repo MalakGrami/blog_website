@@ -8,6 +8,9 @@
     
 @vite(['resources/css/admin.css'])
 @vite(['resources/js/app.js'])
+
+
+
 </head>
 <body>
    
@@ -16,7 +19,7 @@
   
    <main class="admin-main">
 
-    {{-- @if (session('success'))
+    @if (session('success'))
     <div class="alert alert-success">
      {{session('success')}}
     </div>
@@ -33,7 +36,7 @@
     <div class="alert alert-warning">
      {{session('warning')}}
     </div>
-    @endif --}}
+    @endif
 
 
     @yield('content')

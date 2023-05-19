@@ -5,8 +5,8 @@
 @section('content')
 <style>
     .container {
-        margin-top: 50px;
-        margin-left: 40%
+        margin-top: 0px;
+        margin-left: 20%
     }
 
     .login-title {
@@ -32,7 +32,7 @@
     }
 
     .form-control {
-        width: 100%;
+        width: 70%;
         padding: 10px;
         font-size: 16px;
         border: 1px solid #ccc;
@@ -60,7 +60,7 @@
                     <label for="image">Image de profil</label>
                     <input type="file" name="image" id="image" class="form-control-file" value="{{ $user->image }}">
                 </div>
-                <button type="submit" class="btn">Mettre à jour</button>
+                <button type="submit" class="btnn">Mettre à jour</button>
             </form>
         </div>
         <div class="col-md-9">
@@ -80,7 +80,7 @@
                     <label for="confirm_password">Confirmer le mot de passe</label>
                     <input type="password" name="confirm_password" id="confirm_password" class="form-control @error('confirm_password') has-error @enderror">
                 </div>
-                <button type="submit" class="btn">Changer le mot de passe</button>
+                <button type="submit" class="btnn">Changer le mot de passe</button>
             </form>
         </div>
         

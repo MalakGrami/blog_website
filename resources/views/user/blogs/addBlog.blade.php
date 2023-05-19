@@ -1,15 +1,15 @@
 @extends('user.master')
 
-@section('title', 'Settings')
+@section('title', 'add blog')
 
 @section('content')
 
 
 <section class="home" >
-    <div class="text" style="text-align: center">Créer un blog</div>
+    
     <div class="container">
         <div class="row mb-12">
-            <div class="col-8" >
+            <div class="col-10" >
                 <div class="card">
                     <div class="card-header">
                         <h5>
@@ -84,7 +84,7 @@
                             </div>
     
                             <div class="form-group text-end">
-                                <button type="submit" class="btn">Créer</button>
+                                <button type="submit" class="btnn">Créer</button>
                             </div>
                         </form>
                     </div>
