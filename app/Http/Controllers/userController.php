@@ -12,7 +12,7 @@ class userController extends Controller
     //get users
     public function getUsers()
 {
-    $users = User::paginate(7); // Fetch users with pagination
+    $users = User::orderBy('created_at', 'desc')->paginate(7); // Fetch users with pagination
     
     return view('adminPanel.users.index', compact('users'));
 }

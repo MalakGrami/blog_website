@@ -9,14 +9,14 @@
         <li>
             <a href="{{route('home')}}">Accueil</a>
         </li>
-        <li>
+        {{-- <li>
             <select class="nav-select">
                 <option>-- sélectionnez une catégorie --</option>
-                {{-- @foreach ($categories as $category)
+                @foreach ($categories as $category)
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach --}}
+                @endforeach
             </select>
-        </li>
+        </li> --}}
         @auth
         <li> 
             <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Se déconnecter</a>
@@ -59,6 +59,7 @@
     }
 
     header .logo {
+        margin-left: 0%;
         color: #6100ff;
         font-weight: 500;
         font-size: 1.5em;

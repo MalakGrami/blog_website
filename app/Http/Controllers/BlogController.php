@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use ConsoleTVs\Charts\Facades\Charts;
 use Illuminate\Http\JsonResponse;
+
+
+
 class BlogController extends Controller
 {
     //get blogs with  search or not 
@@ -54,7 +57,7 @@ class BlogController extends Controller
 
 
     { 
-        $blogs = blog::paginate(7);; 
+        $blogs = blog::orderBy('created_at', 'desc')->paginate(7);; 
         return view('adminPanel.blog.blog', compact('blogs') );
         
     } 
@@ -196,17 +199,15 @@ class BlogController extends Controller
     // dashboard
     public function getChartData()
 {
-    // Get the blogs created on each day
     $blogs = Blog::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
         ->groupBy(DB::raw('DATE(created_at)'))
         ->pluck('count', 'date')
         ->toArray();
 
-    // Prepare data for the line chart
     $labels = [];
     $data = [];
     $today = Carbon::now()->format('Y-m-d');
-    $start = Carbon::now()->subDays(6)->format('Y-m-d'); // Count for the last 7 days
+    $start = Carbon::now()->subDays(29)->format('Y-m-d'); 
 
     $currentDate = Carbon::parse($start);
     while ($currentDate <= $today) {
@@ -215,9 +216,16 @@ class BlogController extends Controller
         $currentDate->addDay();
     }
 
-    // Pass the data to the view
-    return view('adminPanel.dashboard')->with(compact('labels', 'data'));
+    $chartData = [
+        'labels' => $labels,
+        'data' => $data,
+    ];
+
+    return view('adminPanel.dashboard', compact('chartData'));
 }
+
+
+
 
 }
 
