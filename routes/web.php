@@ -75,7 +75,7 @@ Route::group( ['prefix'=>'adminPanel','middleware' =>'authAdmin'],function() {
     Route::put('/blog/{id}', [BlogController::class,'acceptBlog'])->name('acceptBlog');
    
     // Dashboard
-    Route::get('/chart-data', [BlogController::class,'getChartData'])->name('adminPanel.getChartData');
+    Route::get('/blog_in_day', [BlogController::class,'blog_in_day'])->name('adminPanel.blog_in_day');
 
 
 

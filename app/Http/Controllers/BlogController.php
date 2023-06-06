@@ -197,7 +197,7 @@ class BlogController extends Controller
             }
 
     // dashboard
-    public function getChartData()
+    public function blog_in_day()
 {
     $blogs = Blog::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
         ->groupBy(DB::raw('DATE(created_at)'))

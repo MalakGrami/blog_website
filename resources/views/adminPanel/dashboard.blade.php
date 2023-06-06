@@ -1,10 +1,9 @@
 @extends('adminPanel.master')
-@section('title', 'Blog Detail')
+@section('title', 'Dashboard')
 @section('content')
 <!DOCTYPE html>
 <html>
 <head>
-    
     <style>
         /* Adjust the chart container size */
         #myChart {
@@ -16,75 +15,24 @@
             left: 80px; /* Align the chart container to the right */
         }
     </style>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        // Pass the chartData from PHP to JavaScript
+        var chartData = @json($chartData);
+    </script>
+    <script src="{{ mix('resources/js/graph.js') }}"></script>
     
-    @vite('resources/js/graph.js')
 </head>
 <body>
     <div id="myChart"></div>
-    
+   
     <script>
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-            var chartData = @json($chartData);
-
-            var data = google.visualization.arrayToDataTable([
-                ['Date', 'Count'],
-                ...chartData.labels.map((label, index) => [new Date(label), chartData.data[index]])
-            ]);
-
-            var options = {
-                title: 'Blog Posts',
-                chartArea: { width: '80%', height: '70%' }, // Adjust the chart area size as desired
-                hAxis: {
-                    title: 'Date',
-                    format: 'MMM d', // Display date in a specific format
-                    textStyle: {
-                        color: '#333', // Set the color of the axis text
-                        fontSize: 12 // Set the font size of the axis text
-                    },
-                    titleTextStyle: {
-                        color: '#666', // Set the color of the axis title
-                        fontSize: 14, // Set the font size of the axis title
-                        bold: true // Make the axis title bold
-                    },
-                    gridlines: {
-                        color: 'transparent' // Hide the vertical gridlines
-                    }
-                },
-                vAxis: {
-                    title: 'Count',
-                    minValue: 0,
-                    textStyle: {
-                        color: '#333', // Set the color of the axis text
-                        fontSize: 12 // Set the font size of the axis text
-                    },
-                    titleTextStyle: {
-                        color: '#666', // Set the color of the axis title
-                        fontSize: 14, // Set the font size of the axis title
-                        bold: true // Make the axis title bold
-                    },
-                    gridlines: {
-                        color: '#eee' // Set the color of the horizontal gridlines
-                    }
-                },
-                titleTextStyle: {
-                    color: '#888', // Set the color of the chart title
-                    fontSize: 18, // Set the font size of the chart title
-                    bold: true // Make the chart title bold
-                },
-                colors: ['#2f1a82'], // Set the color of the line
-                backgroundColor: '#f5f5f5', // Set the background color of the chart
-                legend: {
-                    position: 'none' // Hide the legend
-                }
-            };
-
-            var chart = new google.visualization.LineChart(document.getElementById('myChart'));
-            chart.draw(data, options);
-        }
+        // Call the blog_in_day function after the DOM has loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            blog_in_day(chartData);
+        });
     </script>
+   
 </body>
 </html>
 @endsection

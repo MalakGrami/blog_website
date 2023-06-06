@@ -8,7 +8,8 @@
 
     @vite('resources/css/admin.css')
     @vite('resources/js/app.js')
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    
 
     
 </head>
