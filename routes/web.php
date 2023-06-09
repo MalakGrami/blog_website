@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\userController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,11 +75,23 @@ Route::group( ['prefix'=>'adminPanel','middleware' =>'authAdmin'],function() {
     Route::put('/blog/{id}', [BlogController::class,'acceptBlog'])->name('acceptBlog');
    
     // Dashboard
-    Route::get('/blog_in_day', [BlogController::class,'blog_in_day'])->name('adminPanel.blog_in_day');
+    Route::get('/', [DashboardController::class,'getDashboardData'])->name('Dashboard');
+    // Route::get('/blog-with-category', [CategoryController::class,'blog_with_category'])->name('blog.with.category');
+    // Route::get('/', function () {return view('adminPanel/dashboard');})->name('Dashboard');
 
-
-
-   
+ 
+    // Route::get('/', function () {
+    //     $blogController = new BlogController();
+    //     $blogData = $blogController->blog_in_day();
+    
+    //     $categoryController = new CategoryController();
+    //     $blog_with_category = $categoryController->blog_with_category();
+    
+    //     return view('adminPanel.dashboard', compact('blogData', 'blog_with_category'));
+    // })->name('Dashboard');
+    
+    
+    
     
 
 

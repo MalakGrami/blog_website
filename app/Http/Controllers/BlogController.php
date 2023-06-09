@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use ConsoleTVs\Charts\Facades\Charts;
 use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\CategoryController;
 
 
 
@@ -196,33 +197,6 @@ class BlogController extends Controller
                 }
             }
 
-    // dashboard
-    public function blog_in_day()
-{
-    $blogs = Blog::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
-        ->groupBy(DB::raw('DATE(created_at)'))
-        ->pluck('count', 'date')
-        ->toArray();
-
-    $labels = [];
-    $data = [];
-    $today = Carbon::now()->format('Y-m-d');
-    $start = Carbon::now()->subDays(29)->format('Y-m-d'); 
-
-    $currentDate = Carbon::parse($start);
-    while ($currentDate <= $today) {
-        $labels[] = $currentDate->format('Y-m-d');
-        $data[] = $blogs[$currentDate->format('Y-m-d')] ?? 0;
-        $currentDate->addDay();
-    }
-
-    $chartData = [
-        'labels' => $labels,
-        'data' => $data,
-    ];
-
-    return view('adminPanel.dashboard', compact('chartData'));
-}
 
 
 

@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\blog;
 use App\Models\category;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 class CategoryController extends Controller
 {
     //
@@ -44,4 +46,10 @@ public function allcategories()
         category::findOrFail($id)->delete();
         return back()->with('success','category deleted');
     }
+
+
+  
+
+   
+
 }
